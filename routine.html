@@ -4,14 +4,30 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>B Batch Routine (MuMC 08)</title>
+    <!-- Bootstrap CSS -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
+    <!-- Google Font: Inter -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
     <style>
-      /* Highlight style for the current class */
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        font-weight: 600;
+      }
       .highlight {
-        background-color: #ffff99; /* light yellow */
+        font-weight: 600;
       }
     </style>
   </head>
@@ -22,9 +38,10 @@
         3<sup>rd</sup> Year Routine <br />
         (B Batch - MuMC 08)
       </h2>
+
       <div class="mb-3 mt-3">
-        <label for="daySelector" class="form-label">Select a Day:</label>
-        <select id="daySelector" class="form-select" onchange="updateRoutine()">
+        <label for="daySelector" class="form-label">Select a day:</label>
+        <select id="daySelector" class="form-select" onchange="loadRoutine()">
           <option value="Saturday">Saturday</option>
           <option value="Sunday">Sunday</option>
           <option value="Monday">Monday</option>
@@ -33,270 +50,352 @@
           <option value="Thursday">Thursday</option>
         </select>
       </div>
+
       <div class="card">
         <div class="card-body">
-          <h5 class="card-title" id="selectedDay">Today's Routine</h5>
+          <h4 class="card-title text-center mb-3 mt-3" id="selectedDay">
+            Today's Routine
+          </h4>
           <table class="table table-bordered">
-            <thead>
+            <thead class="table-dark">
               <tr>
                 <th>Time</th>
                 <th>Subject</th>
               </tr>
             </thead>
-            <tbody id="routineTable"></tbody>
+            <tbody id="routine-body">
+              <!-- Routine data will be injected here -->
+            </tbody>
           </table>
         </div>
       </div>
     </div>
 
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
     <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        setDefaultDay();
-      });
+      const routineData = {
+        Saturday: [
+          {
+            start: "08:10 AM",
+            end: "10:00 AM",
+            subject: "Pharmacology",
+            tag: "Tutorial",
+            badge: "primary",
+          },
+          {
+            start: "10:20 AM",
+            end: "12:00 PM",
+            subject: "Surgery",
+            tag: "Morning Ward",
+            badge: "warning text-dark",
+          },
+          {
+            start: "12:00 PM",
+            end: "12:50 PM",
+            subject: "Microbiology",
+            tag: "Lecture",
+            badge: "success",
+          },
+          {
+            start: "12:50 PM",
+            end: "01:40 PM",
+            subject: "Forensic Medicine",
+            tag: "Lecture",
+            badge: "success",
+          },
+          {
+            start: "07:00 PM",
+            end: "09:00 PM",
+            subject: "Surgery",
+            tag: "Evening Ward",
+            badge: "warning text-dark",
+          },
+        ],
+        Sunday: [
+          {
+            start: "07:20 AM",
+            end: "08:10 AM",
+            subject: "Surgery",
+            tag: "Lecture",
+            badge: "success",
+          },
+          {
+            start: "08:10 AM",
+            end: "10:00 AM",
+            subject: "Pathology",
+            tag: "Tutorial",
+            badge: "primary",
+          },
+          {
+            start: "10:20 AM",
+            end: "12:00 PM",
+            subject: "Surgery",
+            tag: "Morning Ward",
+            badge: "warning text-dark",
+          },
+          {
+            start: "12:00 PM",
+            end: "12:50 PM",
+            subject: "Forensic Medicine",
+            tag: "Lecture",
+            badge: "success",
+          },
+          {
+            start: "12:50 PM",
+            end: "01:40 PM",
+            subject: "Pharmacology",
+            tag: "Lecture",
+            badge: "success",
+          },
+          {
+            start: "07:00 PM",
+            end: "09:00 PM",
+            subject: "Surgery",
+            tag: "Evening Ward",
+            badge: "warning text-dark",
+          },
+        ],
+        Monday: [
+          {
+            start: "08:10 AM",
+            end: "10:00 AM",
+            subject: "Forensic Medicine",
+            tag: "Tutorial",
+            badge: "primary",
+          },
+          {
+            start: "10:20 AM",
+            end: "12:00 PM",
+            subject: "Surgery",
+            tag: "Morning Ward",
+            badge: "warning text-dark",
+          },
+          {
+            start: "12:00 PM",
+            end: "12:50 PM",
+            subject: "Pharmacology",
+            tag: "Lecture",
+            badge: "success",
+          },
+          {
+            start: "12:50 PM",
+            end: "01:40 PM",
+            subject: "Pathology",
+            tag: "Lecture",
+            badge: "success",
+          },
+          {
+            start: "01:40 PM",
+            end: "02:30 PM",
+            subject: "Medicine",
+            tag: "Lecture",
+            badge: "success",
+          },
+          {
+            start: "07:00 PM",
+            end: "09:00 PM",
+            subject: "Surgery",
+            tag: "Evening Ward",
+            badge: "warning text-dark",
+          },
+        ],
+        Tuesday: [
+          {
+            start: "08:10 AM",
+            end: "10:00 AM",
+            subject: "Pharmacology",
+            tag: "Tutorial",
+            badge: "primary",
+          },
+          {
+            start: "10:20 AM",
+            end: "12:00 PM",
+            subject: "Surgery",
+            tag: "Morning Ward",
+            badge: "warning text-dark",
+          },
+          {
+            start: "12:00 PM",
+            end: "01:40 PM",
+            subject: "Integrated Teaching",
+            tag: "Lecture",
+            badge: "success",
+          },
+          {
+            start: "07:00 PM",
+            end: "09:00 PM",
+            subject: "Surgery",
+            tag: "Evening Ward",
+            badge: "warning text-dark",
+          },
+        ],
+        Wednesday: [
+          {
+            start: "08:10 AM",
+            end: "10:00 AM",
+            subject: "Microbiology",
+            tag: "Tutorial",
+            badge: "primary",
+          },
+          {
+            start: "10:20 AM",
+            end: "12:00 PM",
+            subject: "Surgery",
+            tag: "Morning Ward",
+            badge: "warning text-dark",
+          },
+          {
+            start: "12:00 PM",
+            end: "12:50 PM",
+            subject: "Pharmacology",
+            tag: "Lecture",
+            badge: "success",
+          },
+          {
+            start: "12:50 PM",
+            end: "01:40 PM",
+            subject: "Forensic Medicine",
+            tag: "Lecture",
+            badge: "success",
+          },
+          {
+            start: "07:00 PM",
+            end: "09:00 PM",
+            subject: "Surgery",
+            tag: "Evening Ward",
+            badge: "warning text-dark",
+          },
+        ],
+        Thursday: [
+          {
+            start: "08:10 AM",
+            end: "10:00 AM",
+            subject: "Forensic Medicine",
+            tag: "Tutorial",
+            badge: "primary",
+          },
+          {
+            start: "10:20 AM",
+            end: "12:00 PM",
+            subject: "Surgery",
+            tag: "Morning Ward",
+            badge: "warning text-dark",
+          },
+          {
+            start: "12:00 PM",
+            end: "12:50 PM",
+            subject: "Forensic Medicine",
+            tag: "Lecture",
+            badge: "success",
+          },
+          {
+            start: "12:50 PM",
+            end: "01:40 PM",
+            subject: "Pharmacology",
+            tag: "Lecture",
+            badge: "success",
+          },
+          {
+            start: "07:00 PM",
+            end: "09:00 PM",
+            subject: "Surgery",
+            tag: "Evening Ward",
+            badge: "warning text-dark",
+          },
+        ],
+      };
+      let today = new Date().toLocaleDateString("en-US", { weekday: "long" });
+
+      function loadRoutine() {
+        let selectedDay = document.getElementById("daySelector").value;
+        document.getElementById(
+          "selectedDay"
+        ).innerText = `${selectedDay}'s Routine`;
+
+        let routineBody = document.getElementById("routine-body");
+        routineBody.innerHTML = "";
+
+        let routine = routineData[selectedDay];
+
+        if (routine.length === 0) {
+          routineBody.innerHTML = `<tr><td colspan="2" class="text-center">No classes scheduled.</td></tr>`;
+          return;
+        }
+
+        routine.forEach((item) => {
+          let row = document.createElement("tr");
+          row.setAttribute("data-start", item.start);
+          row.setAttribute("data-end", item.end);
+          row.innerHTML = `
+                    <td>${item.start} - ${item.end}</td>
+                    <td>${item.subject} <span class="badge bg-${item.badge}">${item.tag}</span></td>
+                `;
+          routineBody.appendChild(row);
+        });
+
+        // Only highlight if today is selected
+        if (selectedDay === today) {
+          checkCurrentClass();
+        }
+      }
+
+      function checkCurrentClass() {
+        let now = new Date();
+        let currentHours = now.getHours();
+        let currentMinutes = now.getMinutes();
+        let currentPeriod = currentHours >= 12 ? "PM" : "AM";
+
+        currentHours = currentHours % 12 || 12; // Convert to 12-hour format
+        let currentTime = `${currentHours}:${
+          currentMinutes < 10 ? "0" : ""
+        }${currentMinutes} ${currentPeriod}`;
+
+        let rows = document.querySelectorAll("#routine-body tr");
+        rows.forEach((row) => {
+          let startTime = row.getAttribute("data-start");
+          let endTime = row.getAttribute("data-end");
+
+          if (isTimeBetween(currentTime, startTime, endTime)) {
+            row.classList.add("highlight");
+          } else {
+            row.classList.remove("highlight");
+          }
+        });
+      }
+
+      function isTimeBetween(current, start, end) {
+        function convertTo24Hour(time) {
+          let [hours, minutes, period] = time
+            .match(/(\d+):(\d+) (AM|PM)/)
+            .slice(1);
+          hours = parseInt(hours);
+          minutes = parseInt(minutes);
+          if (period === "PM" && hours !== 12) hours += 12;
+          if (period === "AM" && hours === 12) hours = 0;
+          return hours * 60 + minutes; // Convert to total minutes
+        }
+
+        let currentMinutes = convertTo24Hour(current);
+        let startMinutes = convertTo24Hour(start);
+        let endMinutes = convertTo24Hour(end);
+
+        return currentMinutes >= startMinutes && currentMinutes < endMinutes;
+      }
 
       function setDefaultDay() {
-        const days = [
-          "Sunday",
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Saturday",
-        ];
-        let today = new Date().toLocaleString("en-us", { weekday: "long" });
-        if (!days.includes(today)) {
-          today = "Sunday";
-        }
         document.getElementById("daySelector").value = today;
-        updateRoutine();
+        loadRoutine();
       }
 
-      // Helper function to parse a time string like "8:10 am" into a Date object for today.
-      function parseTime(timeStr) {
-        const [time, modifier] = timeStr.trim().toLowerCase().split(" ");
-        let [hours, minutes] = time.split(":").map(Number);
-        if (modifier === "pm" && hours !== 12) {
-          hours += 12;
+      setInterval(() => {
+        if (document.getElementById("daySelector").value === today) {
+          checkCurrentClass();
         }
-        if (modifier === "am" && hours === 12) {
-          hours = 0;
-        }
-        let now = new Date();
-        now.setHours(hours, minutes, 0, 0);
-        return now;
-      }
+      }, 1000); // Check every second
 
-      function updateRoutine() {
-        const day = document.getElementById("daySelector").value;
-        document.getElementById("selectedDay").innerText = `${day}'s Routine`;
-
-        const routineData = {
-          Saturday: [
-            {
-              time: "8:10 am - 10:00 am",
-              subject: "Pharmacology",
-              type: "Tutorial",
-            },
-            {
-              time: "10:20 am - 12:00 pm",
-              subject: "Surgery",
-              type: "Morning Ward",
-            },
-            {
-              time: "12:00 pm - 12:50 pm",
-              subject: "Microbiology",
-              type: "Lecture",
-            },
-            {
-              time: "12:50 pm - 1:40 pm",
-              subject: "Forensic Medicine",
-              type: "Lecture",
-            },
-            {
-              time: "7:00 pm - 9:00 pm",
-              subject: "Surgery",
-              type: "Evening Ward",
-            },
-          ],
-          Sunday: [
-            { time: "7:20 am - 8:10 am", subject: "Surgery", type: "Lecture" },
-            {
-              time: "8:10 am - 10:00 am",
-              subject: "Pathology",
-              type: "Tutorial",
-            },
-            {
-              time: "10:20 am - 12:00 pm",
-              subject: "Surgery",
-              type: "Morning Ward",
-            },
-            {
-              time: "12:00 pm - 12:50 pm",
-              subject: "Forensic Medicine",
-              type: "Lecture",
-            },
-            {
-              time: "12:50 pm - 1:40 pm",
-              subject: "Pharmacology",
-              type: "Lecture",
-            },
-            {
-              time: "7:00 pm - 9:00 pm",
-              subject: "Surgery",
-              type: "Evening Ward",
-            },
-          ],
-          Monday: [
-            {
-              time: "1:10 am - 10:00 am",
-              subject: "Forensic Medicine",
-              type: "Tutorial",
-            },
-            {
-              time: "10:20 am - 12:00 pm",
-              subject: "Surgery",
-              type: "Morning Ward",
-            },
-            {
-              time: "12:00 pm - 12:50 pm",
-              subject: "Pharmacology",
-              type: "Lecture",
-            },
-            {
-              time: "12:50 pm - 1:40 pm",
-              subject: "Pathology",
-              type: "Lecture",
-            },
-            { time: "1:40 pm - 2:30 pm", subject: "Medicine", type: "Lecture" },
-            {
-              time: "7:00 pm - 9:00 pm",
-              subject: "Surgery",
-              type: "Evening Ward",
-            },
-          ],
-          Tuesday: [
-            {
-              time: "8:10 am - 10:00 am",
-              subject: "Pharmacology",
-              type: "Tutorial",
-            },
-            {
-              time: "10:20 am - 12:00 pm",
-              subject: "Surgery",
-              type: "Morning Ward",
-            },
-            {
-              time: "12:00 pm - 1:40 pm",
-              subject: "Integrated Teaching",
-              type: "Lecture",
-            },
-            {
-              time: "7:00 pm - 9:00 pm",
-              subject: "Surgery",
-              type: "Evening Ward",
-            },
-          ],
-          Wednesday: [
-            {
-              time: "8:10 am - 10:00 am",
-              subject: "Microbiology",
-              type: "Tutorial",
-            },
-            {
-              time: "10:20 am - 12:00 pm",
-              subject: "Surgery",
-              type: "Morning Ward",
-            },
-            {
-              time: "12:00 pm - 12:50 pm",
-              subject: "Pharmacology",
-              type: "Lecture",
-            },
-            {
-              time: "12:50 pm - 1:40 pm",
-              subject: "Forensic Medicine",
-              type: "Lecture",
-            },
-            {
-              time: "7:00 pm - 9:00 pm",
-              subject: "Surgery",
-              type: "Evening Ward",
-            },
-          ],
-          Thursday: [
-            {
-              time: "8:10 am - 10:00 am",
-              subject: "Forensic Medicine",
-              type: "Tutorial",
-            },
-            {
-              time: "10:20 am - 12:00 pm",
-              subject: "Surgery",
-              type: "Morning Ward",
-            },
-            {
-              time: "12:00 pm - 12:50 pm",
-              subject: "Forensic Medicine",
-              type: "Lecture",
-            },
-            {
-              time: "12:50 pm - 1:40 pm",
-              subject: "Pharmacology",
-              type: "Lecture",
-            },
-            {
-              time: "7:00 pm - 9:00 pm",
-              subject: "Surgery",
-              type: "Evening Ward",
-            },
-          ],
-        };
-
-        const routineTable = document.getElementById("routineTable");
-        routineTable.innerHTML = "";
-
-        const now = new Date();
-        const currentDay = new Date().toLocaleString("en-us", {
-          weekday: "long",
-        });
-        const isToday = day === currentDay;
-
-        routineData[day].forEach((item) => {
-          let highlightClass = "";
-          if (isToday) {
-            // Split the time string into start and end times
-            const times = item.time.split(" - ");
-            if (times.length === 2) {
-              const startTime = parseTime(times[0]);
-              const endTime = parseTime(times[1]);
-              console.log(
-                `Now: ${now.toLocaleTimeString()}, Start: ${startTime.toLocaleTimeString()}, End: ${endTime.toLocaleTimeString()}`
-              );
-              if (now >= startTime && now < endTime) {
-                highlightClass = " highlight";
-                console.log(`Highlighting ${item.subject}`);
-              }
-            }
-          }
-
-          const badgeClass =
-            {
-              Tutorial: "badge bg-primary",
-              Lecture: "badge bg-success",
-              "Morning Ward": "badge bg-warning text-dark",
-              "Evening Ward": "badge bg-warning text-dark",
-            }[item.type] || "";
-
-          const formattedSubject = item.type
-            ? `${item.subject} <span class="${badgeClass}">${item.type}</span>`
-            : item.subject;
-
-          routineTable.innerHTML += `<tr class="routine-row${highlightClass}">
-                        <td>${item.time}</td>
-                        <td>${formattedSubject}</td>
-                     </tr>`;
-        });
-      }
+      setDefaultDay(); // Load today's routine on page load
     </script>
   </body>
 </html>
